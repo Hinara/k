@@ -41,6 +41,9 @@ SUBDIRS	= \
 
 ABS_INSTALL = $(abspath $(INSTALL_ROOT))
 
+run: k.iso
+	qemu-system-i386 -cdrom k.iso -serial stdio
+
 all: k.iso
 
 k: libs/libc
@@ -50,7 +53,7 @@ $(ROMS): tools/mkkfs libs/libc libs/libk
 k.iso: install
 	./tools/create-iso.sh $@ $(INSTALL_ROOT) $(ROMS)
 
-$(SUBDIRS):
+$(SUBDIRS): .FORCE
 	$(MAKE) -C $@
 
 install: libs/libc libs/libk k
@@ -70,4 +73,6 @@ clean:
 	$(RM) -r root
 	$(RM) -r iso
 
-.PHONY: $(SUBDIRS) $(INSTALL_ROOT) install
+
+.FORCE:
+.PHONY: $(INSTALL_ROOT) install

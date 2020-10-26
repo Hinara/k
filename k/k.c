@@ -22,8 +22,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <k/kstd.h>
-
+#include <stdio.h>
 #include "multiboot.h"
+#include "gdt.h"
+
+static void set_gdt() {
+	static const u64 gdt_array[] __attribute__((aligned(16))) = {
+		GDT_ENTRY(0, 0, 0),
+		GDT_ENTRY(0, 0xfffff, GDT_DEFAULT_KERNEL_CODE),
+		GDT_ENTRY(0, 0xfffff, GDT_DEFAULT_KERNEL_DATA),
+		GDT_ENTRY(0, 0xfffff, GDT_DEFAULT_USER_CODE),
+		GDT_ENTRY(0, 0xfffff, GDT_DEFAULT_USER_DATA),
+	};
+	static const struct gdt_ptr gdt = {
+		.ptr = (u32) gdt_array,
+		.len = sizeof(gdt_array) - 1
+	};
+	printf("Flush GDT\r\n");
+	gdt_flush(&gdt);
+	printf("GDT Flushed\r\n");
+}
 
 
 void k_main(unsigned long magic, multiboot_info_t *info)
@@ -35,11 +53,10 @@ void k_main(unsigned long magic, multiboot_info_t *info)
 	char *fb = (void *)0xb8000;
 
 	printf("HELLO\r\n");
-
+	set_gdt();
 	for (unsigned i = 0; ; ) {
 		*fb = star[i++ % 4];
 	}
-
 	for (;;)
 		asm volatile ("hlt");
 }

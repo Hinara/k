@@ -5,7 +5,9 @@ CFLAGS	+= -fno-stack-protector
 #K_EXTRA_CFLAGS = -g3
 # Place each function or data item into a separate section
 CFLAGS += -ffunction-sections -fdata-sections
-CPPFLAGS += -I$(shell $(CC) -m32 --print-file-name=include)
+#CPPFLAGS += -I $(shell $(CC) -m32 --print-file-name=include)
+CPPFLAGS += -I /usr/lib/gcc/x86_64-linux-gnu/9/include
+
 # enable dlmalloc self-corruption tests.
 #CPPFLAGS += -DDEBUG=1 -DFOOTERS=1
 

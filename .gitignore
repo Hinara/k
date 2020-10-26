@@ -1,0 +1,12 @@
+iso/**
+*.d
+*.o
+*.a
+*.iso
+roms/chichehunter/hunter
+roms/chichepong/pong
+roms/chichevaders/vaders
+roms/perrodlauncher/perrod
+roms/skate/skate
+roms/yakanoid/yakanoid
+k/k

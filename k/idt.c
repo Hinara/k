@@ -42,12 +42,7 @@ void set_idt() {
 #include <stdio.h>
 
 struct idt_registers {
-	u16	cs;
-	u16	ds;
-	u16	ss;
-	u16	es;
-	u16	fs;
-	u16	gs;
+// General registers
 	u32	eax;
 	u32	ebx;
 	u32	ecx;
@@ -56,6 +51,17 @@ struct idt_registers {
 	u32	edi;
 	u32	ebp;
 	u32	esp;
+// Segment registers
+	u16	cs;
+	u16	ds;
+	u16	ss;
+	u16	es;
+	u16	fs;
+	u16	gs;
+// Other registers
+	u32	eip;
+	u32	eflags;
+
 } __attribute__((packed));
 
 struct idt_params {
@@ -64,15 +70,9 @@ struct idt_params {
 	u32 code;
 };
 
-void interrupt_handler(const struct idt_params *params) {
+void interrupt_handler(struct idt_params *params) {
 	printf("IntNo\t%02x\r\n", params->interrupt);
 	printf("ErrCode\t%08x\r\n", params->code);
-	printf("CS\t%04x\r\n", params->regs.cs);
-	printf("DS\t%04x\r\n", params->regs.ds);
-	printf("SS\t%04x\r\n", params->regs.ss);
-	printf("ES\t%04x\r\n", params->regs.es);
-	printf("FS\t%04x\r\n", params->regs.fs);
-	printf("GS\t%04x\r\n", params->regs.gs);
 	printf("eax\t%08x\r\n", params->regs.eax);
 	printf("ebx\t%08x\r\n", params->regs.ebx);
 	printf("ecx\t%08x\r\n", params->regs.ecx);
@@ -81,4 +81,12 @@ void interrupt_handler(const struct idt_params *params) {
 	printf("edi\t%08x\r\n", params->regs.edi);
 	printf("ebp\t%08x\r\n", params->regs.ebp);
 	printf("esp\t%08x\r\n", params->regs.esp);
+	printf("CS\t%04x\r\n", params->regs.cs);
+	printf("DS\t%04x\r\n", params->regs.ds);
+	printf("SS\t%04x\r\n", params->regs.ss);
+	printf("ES\t%04x\r\n", params->regs.es);
+	printf("FS\t%04x\r\n", params->regs.fs);
+	printf("GS\t%04x\r\n", params->regs.gs);
+	printf("eflags\t%08x\r\n", params->regs.eflags);
+	printf("eip\t%08x\r\n", params->regs.eip);
 }

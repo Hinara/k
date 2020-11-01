@@ -41,10 +41,11 @@ static void set_gdt() {
 
 void TEST() {
 	printf("TEST\r\n");
-	asm volatile ("int $0x08");
 	printf("TEST2\r\n");
 	asm volatile ("int $0x07");
 	printf("TEST3\r\n");
+	asm volatile("mov %0, %%gs" : : "a"(50));
+	printf("TEST4\r\n");
 }
 void k_main(unsigned long magic, multiboot_info_t *info)
 {

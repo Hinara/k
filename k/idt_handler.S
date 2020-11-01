@@ -3,7 +3,6 @@
 .text
 .type   general_handler, @function
 general_handler:
-	add %esp, (%esp)
 
 	pushl %esp
 	pushl %ebp
@@ -39,19 +38,18 @@ general_handler:
 	popl %edi
 	popl %ebp
 	add $4, %esp # %esp # Drop esp
-	popl %esp
+	
+	add $8, %esp # Drop interupt no &error code
 	iret
 
 .macro interrupt_handler_error nb
 	pushl \nb
-	pushl $0x8
 	jmp general_handler;
 .endm
 
 .macro interrupt_handler_noerror nb
 	pushl $0x0
 	pushl \nb
-	pushl $0xC
 	jmp general_handler;
 .endm
 

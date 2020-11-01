@@ -31,6 +31,8 @@ OBJS	= \
 	  list.o \
 	  memory.o \
 	  write.o \
+	  idt_handler.o \
+	  idt.o \
 
 
 DEPS = $(OBJS:.o=.d)

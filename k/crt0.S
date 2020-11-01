@@ -22,7 +22,7 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "multiboot.h"
-
+#include "gdt.h"
 #define HEADER_FLAGS (MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO)
 #define STACK_SIZE	8192
 
@@ -53,9 +53,9 @@ k_entry:
 gdt_flush:
 	mov 4(%esp), %eax	# Get the pointer to the GDT, passed as a parameter.
 	lgdt (%eax)		# Load the new GDT pointer
-	ljmp $0x08, $.flush	# 0x08 is the offset to our code segment: Far jump!
+	ljmp $GDT_KERNEL_CS*8, $.flush	# GDT_KERNEL_CS is the offset to our code segment: Far jump!
 .flush:
-	mov $0x10, %ax		# 0x10 is the offset in the GDT to our data segment
+	mov $GDT_KERNEL_DS*8, %ax # GDT_KERNEL_DS is the offset in the GDT to our data segment
 	mov %ax, %ds		# Load all data segment selectors
 	mov %ax, %es
 	mov %ax, %fs

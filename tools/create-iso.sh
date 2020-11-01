@@ -18,5 +18,9 @@ menuentry "k - $(get_make_var ROM_TITLE "$i")" {
 }
 EOF
 done > $base_dir/boot/grub/grub.cfg
+#cat >> $base_dir/boot/grub/grub.cfg <<EOF
+#multiboot /k
+#boot
+#EOF
 
 grub-mkrescue -o $iso_filename $base_dir

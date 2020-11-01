@@ -25,14 +25,10 @@
 #include <stdio.h>
 #include "multiboot.h"
 #include "gdt.h"
-
+#include "idt.h"
 static void set_gdt() {
 	static const u64 gdt_array[] __attribute__((aligned(16))) = {
-		GDT_ENTRY(0, 0, 0),
-		GDT_ENTRY(0, 0xfffff, GDT_DEFAULT_KERNEL_CODE),
-		GDT_ENTRY(0, 0xfffff, GDT_DEFAULT_KERNEL_DATA),
-		GDT_ENTRY(0, 0xfffff, GDT_DEFAULT_USER_CODE),
-		GDT_ENTRY(0, 0xfffff, GDT_DEFAULT_USER_DATA),
+		#include "gdt_table.h"
 	};
 	static const struct gdt_ptr gdt = {
 		.ptr = (u32) gdt_array,
@@ -43,7 +39,13 @@ static void set_gdt() {
 	printf("GDT Flushed\r\n");
 }
 
-
+void TEST() {
+	printf("TEST\r\n");
+	asm volatile ("int $0x08");
+	printf("TEST2\r\n");
+	asm volatile ("int $0x07");
+	printf("TEST3\r\n");
+}
 void k_main(unsigned long magic, multiboot_info_t *info)
 {
 	(void)magic;
@@ -54,6 +56,10 @@ void k_main(unsigned long magic, multiboot_info_t *info)
 
 	printf("HELLO\r\n");
 	set_gdt();
+	printf("?\r\n");
+	set_idt();
+	printf("OK\r\n");
+	TEST();
 	for (unsigned i = 0; ; ) {
 		*fb = star[i++ % 4];
 	}

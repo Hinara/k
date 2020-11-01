@@ -1,7 +1,6 @@
 #ifndef GDT_H_
 #define GDT_H_
 
-#include <k/types.h>
 
 #define GDT_ENTRY(base, limit, flags)			\
 	((((base)  & 0xff000000ULL) << (56-24)) |	\
@@ -43,18 +42,29 @@
 #define GDT_ACCESSED		0b0000000000000001
 
 
-#define GDT_DEFAULT_KERNEL_CODE	GDT_GRANILARITY_PAGE | GDT_SIZE_32 | \
+#define GDT_KERNEL_CS_FLAGS	GDT_GRANILARITY_PAGE | GDT_SIZE_32 | \
 				GDT_PRESENT | GDT_RING0 | GDT_TYPE_CODE | \
 				GDT_EXECUTABLE | GDT_CODE_READABLE
-#define GDT_DEFAULT_KERNEL_DATA	GDT_GRANILARITY_PAGE | GDT_SIZE_32 | \
+
+#define GDT_KERNEL_DS_FLAGS	GDT_GRANILARITY_PAGE | GDT_SIZE_32 | \
 				GDT_PRESENT | GDT_RING0 | GDT_TYPE_DATA | \
 				GDT_DATA_WRITABLE
-#define GDT_DEFAULT_USER_CODE	GDT_GRANILARITY_PAGE | GDT_SIZE_32 | \
+
+#define GDT_USER_CS_FLAGS	GDT_GRANILARITY_PAGE | GDT_SIZE_32 | \
 				GDT_PRESENT | GDT_RING3 | GDT_TYPE_CODE | \
 				GDT_EXECUTABLE | GDT_CODE_READABLE
-#define GDT_DEFAULT_USER_DATA	GDT_GRANILARITY_PAGE | GDT_SIZE_32 | \
+
+#define GDT_USER_DS_FLAGS	GDT_GRANILARITY_PAGE | GDT_SIZE_32 | \
 				GDT_PRESENT | GDT_RING3 | GDT_TYPE_DATA | \
 				GDT_DATA_WRITABLE
+
+#define GDT_KERNEL_CS 1
+#define GDT_KERNEL_DS 2
+#define GDT_USER_CS 3
+#define GDT_USER_DS 4
+
+#ifndef __ASSEMBLER__
+# include <k/types.h>
 
 struct gdt_ptr {
 	u16 len;
@@ -62,5 +72,7 @@ struct gdt_ptr {
 } __attribute__((packed));
 
 void gdt_flush(const struct gdt_ptr *ptr);
+
+#endif
 
 #endif /* GDT_H_ */

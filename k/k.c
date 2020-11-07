@@ -26,43 +26,25 @@
 #include "multiboot.h"
 #include "gdt.h"
 #include "idt.h"
-static void set_gdt() {
-	static const u64 gdt_array[] __attribute__((aligned(16))) = {
-		#include "gdt_table.h"
-	};
-	static const struct gdt_ptr gdt = {
-		.ptr = (u32) gdt_array,
-		.len = sizeof(gdt_array) - 1
-	};
-	printf("Flush GDT\r\n");
-	gdt_flush(&gdt);
-	printf("GDT Flushed\r\n");
+
+static void star_loader() {
+	char star[4] = "|/-\\";
+	char *fb = (void *)0xb8000;
+
+	for (unsigned i = 0; ; ) {
+		*fb = star[i++ % 4];
+	}
 }
 
-void TEST() {
-	printf("TEST\r\n");
-	asm volatile ("int $0x07");
-	printf("TEST2\r\n");
-	//asm volatile("mov %0, %%gs" : : "a"(50));
-	printf("TEST3\r\n");
-}
 void k_main(unsigned long magic, multiboot_info_t *info)
 {
 	(void)magic;
 	(void)info;
 
-	char star[4] = "|/-\\";
-	char *fb = (void *)0xb8000;
-
-	printf("HELLO\r\n");
 	set_gdt();
-	printf("?\r\n");
 	set_idt();
-	printf("OK\r\n");
-	TEST();
-	for (unsigned i = 0; ; ) {
-		*fb = star[i++ % 4];
-	}
-	for (;;)
-		asm volatile ("hlt");
+
+	asm volatile ("int $0x07");
+	star_loader();
+	asm volatile ("hlt");
 }

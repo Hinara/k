@@ -30,6 +30,34 @@ struct idt_ptr {
 	u32 ptr;
 } __attribute__((packed));
 
+struct idt_registers {
+// General registers
+	u32	eax;
+	u32	ebx;
+	u32	ecx;
+	u32	edx;
+	u32	esi;
+	u32	edi;
+	u32	ebp;
+	u32	esp;
+// Segment registers
+	u16	cs;
+	u16	ds;
+	u16	ss;
+	u16	es;
+	u16	fs;
+	u16	gs;
+// Other registers
+	u32	eip;
+	u32	eflags;
+};
+
+struct idt_params {
+	struct idt_registers regs;
+	u32 interrupt;
+	u32 code;
+};
+
 typedef void (*interupt_handler_t)();
 
 struct idt_base_entry {
@@ -38,6 +66,9 @@ struct idt_base_entry {
 	u16 selector;
 	u8 attributes;
 };
+typedef void (*int_handler)(struct idt_registers *regs, u32 code);
+
+int register_handler(u32 interrupt, int_handler handler, int_handler *old);
 void set_idt();
 #endif
 

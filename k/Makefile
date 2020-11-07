@@ -32,6 +32,7 @@ OBJS	= \
 	  memory.o \
 	  write.o \
 	  idt_handler.o \
+	  gdt.o \
 	  idt.o \
 
 

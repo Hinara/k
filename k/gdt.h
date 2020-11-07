@@ -71,6 +71,7 @@ struct gdt_ptr {
 	u32 ptr;
 } __attribute__((packed));
 
+void set_gdt();
 void gdt_flush(const struct gdt_ptr *ptr);
 
 #endif

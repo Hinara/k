@@ -24,7 +24,7 @@
 #ifndef __ASSEMBLER__
 #include "idt.h"
 void set_irq();
-typedef u32 (*irq_handler_t) (struct idt_registers *regs, u32 irqno, u32 code);
+typedef u32 (*irq_handler_t)();
 void set_irq_handler(u8 irqno, irq_handler_t handler, irq_handler_t *old);
 #endif
 

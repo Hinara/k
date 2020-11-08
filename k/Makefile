@@ -37,6 +37,7 @@ OBJS	= \
 	  pic8259.o \
 	  keyboard8042.o \
 	  syscall.o \
+	  timer8254.o \
 
 DEPS = $(OBJS:.o=.d)
 

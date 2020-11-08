@@ -59,6 +59,8 @@ void irq_eoi(u8 irqno)
 
 void irq_handler(struct idt_registers *regs, u32 interrupt, u32 code)
 {
+	(void) code;
+	(void) regs;
 	u8 irqno = 0;
 	if (interrupt >= IRQ_0_BASE && interrupt < IRQ_0_BASE + 8) {
 		irqno = interrupt - IRQ_0_BASE + 0;
@@ -72,7 +74,7 @@ void irq_handler(struct idt_registers *regs, u32 interrupt, u32 code)
 	if (handler == NULL) {
 		printf("ERROR !\r\nIRQ: %d called without handler\r\n", interrupt);
 	} else {
-		u32 error = handler(regs, irqno, code);
+		u32 error = handler();
 		if (error == 0) {
 			irq_eoi(irqno);
 		}

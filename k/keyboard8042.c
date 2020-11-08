@@ -25,13 +25,9 @@ void put_into_buffer(u8 value)
 	woffset = (woffset + 1) % sizeof(buffer);
 }
 
-u32 keyboard_handler(struct idt_registers *regs, u32 irqno, u32 code)
+u32 keyboard_handler()
 {
-	(void) regs; // Ignore regs not used
-	(void) irqno; // Ignore irqno
-	(void) code; // Ignore code
 	u8 key = inb(KEYBOARD_IO_BUFFER_PORT);
-	u32 display = key;
 	if (KEYBOARD_IS_PRESSED(key)) {
 		put_into_buffer(KEYBOARD_GET_KEYNUMBER(key));
 	}

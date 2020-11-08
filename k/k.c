@@ -29,7 +29,7 @@
 #include "irq.h"
 #include "keyboard8042.h"
 #include "syscall.h"
-
+#include "timer8254.h"
 static int getkey(void)
 {
 	u32 res;
@@ -37,9 +37,18 @@ static int getkey(void)
 	asm volatile ("int $0x80" : "=a"(res) : "a"(SYSCALL_GETKEY));
 	return (int) res;
 }
+unsigned long gettick(void)
+{
+	u32 res;
+	asm volatile ("int $0x80" : "=a"(res) : "a"(SYSCALL_GETTICK));
+
+	return ((unsigned long)res);
+}
 static void star_loader() {
 	char star[4] = "|/-\\";
 	char *fb = (void *)0xb8000;
+	u32 tick = 0;
+	u32 newtick = 0;
 
 	for (unsigned i = 0; ; ) {
 		*fb = star[i++ % 4];
@@ -47,6 +56,11 @@ static void star_loader() {
 		if (key >= 0) {
 			printf("%d\r\n", key);
 		}
+		newtick = gettick() / 1000;
+		if (newtick != tick) {
+			printf("Tick:%ld\r\n", newtick);
+		}
+		tick = newtick;
 	}
 }
 
@@ -60,6 +74,7 @@ void k_main(unsigned long magic, multiboot_info_t *info)
 	set_irq();
 	set_syscalls();
 	set_keyboard();
+	set_timer();
 	star_loader();
 	asm volatile ("hlt");
 }

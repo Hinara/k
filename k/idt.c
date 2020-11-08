@@ -41,10 +41,9 @@ void interrupt_handler(struct idt_params *params)
 {
 #include <stdio.h>
 	int_handler handler = int_handler_table[params->interrupt];
-	printf("%x\r\n", handler);
 
 	if (handler != NULL) {
-		handler(&params->regs, params->code);
+		handler(&params->regs, params->interrupt, params->code);
 	} else {
 		printf("IntNo\t%02x\r\n", params->interrupt);
 		printf("ErrCode\t%08x\r\n", params->code);
@@ -56,7 +55,7 @@ void interrupt_handler(struct idt_params *params)
 		printf("edi\t%08x\r\n", params->regs.edi);
 		printf("ebp\t%08x\r\n", params->regs.ebp);
 		printf("esp\t%08x\r\n", params->regs.esp);
-		printf("CS\t%04x\r\n", params->regs.cs);
+		printf("CS\t%04x\r\n", params->regs.cs); // WRONG
 		printf("DS\t%04x\r\n", params->regs.ds);
 		printf("SS\t%04x\r\n", params->regs.ss);
 		printf("ES\t%04x\r\n", params->regs.es);

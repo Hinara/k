@@ -1,0 +1,39 @@
+#ifndef KEYBOARD8042_H_
+#define KEYBOARD8042_H_
+
+// Ports
+#define KEYBOARD_IO_BUFFER_PORT			0x60
+#define KEYBOARD_STATUS_REGISTER_PORT		0x64
+
+// Status
+#define KEYBOARD_STATUS_OUTPUT_BUFFER_FULL	(1 << 0)
+#define KEYBOARD_STATUS_INPUT_BUFFER_FULL	(1 << 1)
+#define KEYBOARD_STATUS_SYSTEM			(1 << 2)
+// Command / Data
+#define KEYBOARD_STATUS_DATA			(0 << 3)
+#define KEYBOARD_STATUS_COMMAND			(1 << 3)
+// Inhibit switch
+#define KEYBOARD_STATUS_INHIBITED		(0 << 4)
+#define KEYBOARD_STATUS_NOT_INHIBITED		(1 << 4)
+// Transmit Timeout
+#define KEYBOARD_STATUS_NO_TRANSMIT_TIMEOUT	(0 << 5)
+#define KEYBOARD_STATUS_TRANSMIT_TIMEOUT	(1 << 5)
+// Receive Timeout
+#define KEYBOARD_STATUS_NO_RECEIVE_TIMEOUT	(0 << 6)
+#define KEYBOARD_STATUS_RECEIVE_TIMEOUT		(1 << 6)
+// Parity
+#define KEYBOARD_STATUS_PARITY_ODD		(0 << 7)
+#define KEYBOARD_STATUS_PARITY_PAIR		(1 << 7)
+
+#define KEYBOARD_KEYNUMBER_MASK			0b01111111
+#define KEYBOARD_DATA_MASK 			0b10000000
+
+#define KEYBOARD_IS_PRESSED(x)		(((x) & KEYBOARD_DATA_MASK) != 0)
+#define KEYBOARD_IS_RELEASED(x)		(((x) & KEYBOARD_DATA_MASK) == 0)
+#define KEYBOARD_GET_KEYNUMBER(x)	((x) & KEYBOARD_KEYNUMBER_MASK)
+
+#ifndef __ASSEMBLER__
+void set_keyboard();
+#endif
+
+#endif

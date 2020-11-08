@@ -26,13 +26,27 @@
 #include "multiboot.h"
 #include "gdt.h"
 #include "idt.h"
+#include "irq.h"
+#include "keyboard8042.h"
+#include "syscall.h"
 
+static int getkey(void)
+{
+	u32 res;
+	
+	asm volatile ("int $0x80" : "=a"(res) : "a"(SYSCALL_GETKEY));
+	return (int) res;
+}
 static void star_loader() {
 	char star[4] = "|/-\\";
 	char *fb = (void *)0xb8000;
 
 	for (unsigned i = 0; ; ) {
 		*fb = star[i++ % 4];
+		int key = getkey();
+		if (key >= 0) {
+			printf("%d\r\n", key);
+		}
 	}
 }
 
@@ -43,8 +57,9 @@ void k_main(unsigned long magic, multiboot_info_t *info)
 
 	set_gdt();
 	set_idt();
-
-	asm volatile ("int $0x07");
+	set_irq();
+	set_syscalls();
+	set_keyboard();
 	star_loader();
 	asm volatile ("hlt");
 }

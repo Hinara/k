@@ -66,7 +66,7 @@ struct idt_base_entry {
 	u16 selector;
 	u8 attributes;
 };
-typedef void (*int_handler)(struct idt_registers *regs, u32 code);
+typedef void (*int_handler)(struct idt_registers *regs, u32 interrupt, u32 code);
 
 int register_handler(u32 interrupt, int_handler handler, int_handler *old);
 void set_idt();

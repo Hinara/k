@@ -34,7 +34,9 @@ OBJS	= \
 	  idt_handler.o \
 	  gdt.o \
 	  idt.o \
-
+	  pic8259.o \
+	  keyboard8042.o \
+	  syscall.o \
 
 DEPS = $(OBJS:.o=.d)
 

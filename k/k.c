@@ -33,20 +33,23 @@
 #include "write.h"
 #include "serial.h"
 
-static int getkey(void)
+static inline u32 syscall0(u32 syscall)
 {
 	u32 res;
 	
-	asm volatile ("int $0x80" : "=a"(res) : "a"(SYSCALL_GETKEY));
+	asm volatile ("int $0x80" : "=a"(res) : "a"(syscall));
 	return (int) res;
 }
+static int getkey(void)
+{
+	return ((int)syscall0(SYSCALL_GETKEY));
+}
+
 static unsigned long gettick(void)
 {
-	u32 res;
-	asm volatile ("int $0x80" : "=a"(res) : "a"(SYSCALL_GETTICK));
-
-	return ((unsigned long)res);
+	return ((unsigned long)syscall0(SYSCALL_GETTICK));
 }
+
 
 static int com1_write(const char *buf, size_t size)
 {

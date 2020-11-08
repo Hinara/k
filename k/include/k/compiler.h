@@ -10,4 +10,6 @@
 #define SET_U16_MSB(x) ((x << 8) & 0xff00)
 #define SET_U16_LSB(x) ((x << 0) & 0x00ff)
 #define SET_U16_MSB_LSB(lsb, msb) (SET_U16_MSB(msb) | SET_U16_LSB(lsb))
+#define STR(x) #x
+#define XSTR(s) STR(s)
 #endif

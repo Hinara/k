@@ -2,17 +2,12 @@
 #define GDT_H_
 
 
-#define GDT_ENTRY(base, limit, flags)			\
-	((((base)  & 0xff000000ULL) << (56-24)) |	\
-	 (((flags) & 0x0000f0ffULL) << 40) |	\
-	 (((limit) & 0x000f0000ULL) << (48-16)) |	\
-	 (((base)  & 0x00ffffffULL) << 16) |	\
+#define GDT_ENTRY(base, limit, flags)		\
+	((((base)  & 0xff000000ULL) << (56-24)) | \
+	 (((flags) & 0x0000f0ffULL) << 40)	| \
+	 (((limit) & 0x000f0000ULL) << (48-16)) | \
+	 (((base)  & 0x00ffffffULL) << 16)	| \
 	 (((limit) & 0x0000ffffULL)))
-
-//				0b1100000010011010 LINUX KERNEL CODE
-//				0b1100000010010010 LINUX KERNEL DATA
-//				0b1100000011111010 LINUX USER CODE
-//				0b1100000011110010 LINUX USER DATA
 
 #define GDT_GRANILARITY_BIT	0b0000000000000000
 #define GDT_GRANILARITY_PAGE	0b1000000000000000
@@ -58,21 +53,21 @@
 				GDT_PRESENT | GDT_RING3 | GDT_TYPE_DATA | \
 				GDT_DATA_WRITABLE
 
-#define GDT_KERNEL_CS 1
-#define GDT_KERNEL_DS 2
-#define GDT_USER_CS 3
-#define GDT_USER_DS 4
+#define GDT_KERNEL_ENTRY_CS 1
+#define GDT_KERNEL_ENTRY_DS 2
+#define GDT_USER_ENTRY_CS 3
+#define GDT_USER_ENTRY_DS 4
+
+#define GDT_OFFSET_FROM_ENTRY(x) (x*8)
+
+#define GDT_KERNEL_CS GDT_OFFSET_FROM_ENTRY(GDT_KERNEL_ENTRY_CS)
+#define GDT_KERNEL_DS GDT_OFFSET_FROM_ENTRY(GDT_KERNEL_ENTRY_DS)
+#define GDT_USER_CS GDT_OFFSET_FROM_ENTRY(GDT_USER_ENTRY_CS)
+#define GDT_USER_DS GDT_OFFSET_FROM_ENTRY(GDT_USER_ENTRY_DS)
 
 #ifndef __ASSEMBLER__
-# include <k/types.h>
-
-struct gdt_ptr {
-	u16 len;
-	u32 ptr;
-} __attribute__((packed));
 
 void set_gdt();
-void gdt_flush(const struct gdt_ptr *ptr);
 
 #endif
 

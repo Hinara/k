@@ -77,7 +77,7 @@ general_handler:
 	.type interrupt_handler_##nb, @function; \
 interrupt_handler_##nb:	\
 	handler $##nb;
-#include "idt_table.h"
+#include "idt_table.def"
 #undef IDT_FULL_ENTRY
 
 

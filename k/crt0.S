@@ -47,22 +47,6 @@ k_entry:
 	jmp .Lend
 	.size k_entry, . - k_entry
 
-	.section .text
-	.global gdt_flush
-	.type gdt_flush, @function
-gdt_flush:
-	mov 4(%esp), %eax	# Get the pointer to the GDT, passed as a parameter.
-	lgdt (%eax)		# Load the new GDT pointer
-	ljmp $GDT_KERNEL_CS*8, $.flush	# GDT_KERNEL_CS is the offset to our code segment: Far jump!
-.flush:
-	mov $GDT_KERNEL_DS*8, %ax # GDT_KERNEL_DS is the offset in the GDT to our data segment
-	mov %ax, %ds		# Load all data segment selectors
-	mov %ax, %es
-	mov %ax, %fs
-	mov %ax, %gs
-	mov %ax, %ss
-	ret
-
 .section .bss
 stack:
 	.space STACK_SIZE

@@ -22,16 +22,18 @@ struct idt_base_entry {
 };
 
 #define IDT_FULL_ENTRY(nb, error, str) void interrupt_handler_##nb();
-#include "idt_table.h"
+#include "idt_table.def"
 #undef IDT_FULL_ENTRY
 
 
-#define IDT_DEFAULT_ATTRIBUTES (IDT_ATTRIBUTE_PRESENT | IDT_ATTRIBUTE_RING0 | \
-				IDT_ATTRIBUTE_GATE_32INT)
+#define IDT_DEFAULT_ATTRIBUTES ( \
+	IDT_ATTRIBUTE_PRESENT	| \
+	IDT_ATTRIBUTE_RING0	| \
+	IDT_ATTRIBUTE_GATE_32INT)
 
 const struct idt_base_entry interrupt_entries[] = {
-	#define IDT_FULL_ENTRY(nb, error, str) {str, interrupt_handler_##nb, GDT_KERNEL_CS*8, IDT_DEFAULT_ATTRIBUTES },
-	#include "idt_table.h"
+	#define IDT_FULL_ENTRY(nb, error, str) {str, interrupt_handler_##nb, GDT_KERNEL_CS, IDT_DEFAULT_ATTRIBUTES },
+	#include "idt_table.def"
 	#undef IDT_FULL_ENTRY
 };
 u64 interrupt_table[ARRAY_SIZE(interrupt_entries)];
@@ -52,18 +54,18 @@ void set_idt()
 		);
 		int_handler_table[i] = NULL;
 	}
-	asm volatile ("lidt (%0)" : /* No output */ : "a"(&idt) : "memory");
+	asm volatile ("lidt (%0)" : : "a"(&idt) : "memory");
 }
 
 
 void interrupt_handler(struct idt_params *params)
 {
-#include <stdio.h>
 	int_handler handler = int_handler_table[params->interrupt];
 
 	if (handler != NULL) {
 		handler(&params->regs, params->interrupt, params->code);
 	} else {
+#include <stdio.h>
 		printf("IntNo\t%02x\r\n", params->interrupt);
 		printf("ErrCode\t%08x\r\n", params->code);
 		printf("eax\t%08x\r\n", params->regs.eax);

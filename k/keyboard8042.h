@@ -32,8 +32,6 @@
 #define KEYBOARD_IS_RELEASED(x)		(((x) & KEYBOARD_DATA_MASK) == 0)
 #define KEYBOARD_GET_KEYNUMBER(x)	((x) & KEYBOARD_KEYNUMBER_MASK)
 
-#ifndef __ASSEMBLER__
 void set_keyboard();
-#endif
 
 #endif

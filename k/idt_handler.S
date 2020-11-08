@@ -13,7 +13,7 @@ general_handler:
 	movl %ebp, 0x18(%esp)		# Fill EBP
 	movl %esp, 0x1C(%esp)		# Fill ESP (WIP)
 
-	movw 0x44(%esp), %ax		# Move CS to AX
+	movw 0x40(%esp), %ax		# Move CS to AX
 	movw %ax, 0x20(%esp)		# Fill CS
 	movw %ds, 0x22(%esp)		# Fill DS
 	movw %ss, 0x24(%esp)		# Fill SS
@@ -43,7 +43,7 @@ general_handler:
 	movw 0x24(%esp), %ss		# Restore SS
 	movw 0x22(%esp), %ds		# Restore DS
 	movw 0x20(%esp), %ax		# Move CS to AX
-	movw %ax, 0x44(%esp)		# Restore CS
+	movw %ax, 0x40(%esp)		# Restore CS
 
 	# movl 0x1C(%esp), %esp		# Restore ESP (WIP)
 	movl 0x18(%esp), %ebp		# Restore EBP

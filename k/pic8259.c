@@ -97,10 +97,11 @@ void set_irq_handler(u8 irqno, irq_handler_t handler, irq_handler_t *old)
 	if (old != NULL) {
 		*old = old_handler;
 	}
-	if (old_handler == NULL && handler != NULL) {
-		pic_unmask_irq(irqno);
-	} else if (old_handler != NULL && handler == NULL) {
-		pic_mask_irq(irqno);
+	if (old_handler != NULL && handler == NULL) {
+		pic_mask_irq(irqno); // Mask before removing handler
 	}
 	irq_handler_table[irqno] = handler;
+	if (old_handler == NULL && handler != NULL) {
+		pic_unmask_irq(irqno); // Unmask after enabling handler
+	}
 }

@@ -1,12 +1,5 @@
 #ifndef UART_H_
 #define UART_H_
-// COM Base addresses
-
-#define COM1_BASE 0x3F8
-#define COM2_BASE 0x2F8
-#define COM3_BASE 0x3E8
-#define COM4_BASE 0x2E8
-
 
 // UART Offsets
 

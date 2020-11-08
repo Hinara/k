@@ -34,7 +34,7 @@ u32 keyboard_handler()
 	return 0;
 }
 
-u32 sys_getkey(struct idt_registers *regs)
+u32 sys_getkey(struct x86_registers *regs)
 {
 	(void) regs;
 	u8 key;

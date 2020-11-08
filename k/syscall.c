@@ -1,12 +1,11 @@
 #include "syscall.h"
 #include "k/kstd.h"
-#include <stdio.h>
+#include "k/compiler.h"
+#include "idt.h"
 
-#define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(arr[0]))
+static syscall_handler_t syscall_handler_table[MAX_SYSCALL];
 
-syscall_handler_t syscall_handler_table[MAX_SYSCALL];
-
-void syscall_handler(struct idt_registers *regs, u32 interrupt, u32 code)
+static void syscall_handler(struct x86_registers *regs, u32 interrupt, u32 code)
 {
 	(void) code;
 	(void) interrupt;

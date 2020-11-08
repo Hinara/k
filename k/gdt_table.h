@@ -1,5 +1,5 @@
 #include "gdt.h"
-# define GDT_FULL_ENTRY(x,y) [x] = y,
+#define GDT_FULL_ENTRY(x,y) [x] = y,
 
 GDT_FULL_ENTRY(0, GDT_ENTRY(0, 0, 0))
 GDT_FULL_ENTRY(GDT_KERNEL_CS, GDT_ENTRY(0, 0xfffff, GDT_KERNEL_CS_FLAGS))

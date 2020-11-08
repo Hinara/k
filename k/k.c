@@ -30,6 +30,9 @@
 #include "keyboard8042.h"
 #include "syscall.h"
 #include "timer8254.h"
+#include "write.h"
+#include "serial.h"
+
 static int getkey(void)
 {
 	u32 res;
@@ -37,13 +40,22 @@ static int getkey(void)
 	asm volatile ("int $0x80" : "=a"(res) : "a"(SYSCALL_GETKEY));
 	return (int) res;
 }
-unsigned long gettick(void)
+static unsigned long gettick(void)
 {
 	u32 res;
 	asm volatile ("int $0x80" : "=a"(res) : "a"(SYSCALL_GETTICK));
 
 	return ((unsigned long)res);
 }
+
+static int com1_write(const char *buf, size_t size)
+{
+	for (size_t count = 0; count < size; count++) {
+		send_com(COM1_BASE, buf[count]);
+	}
+	return size;
+}
+
 static void star_loader() {
 	char star[4] = "|/-\\";
 	char *fb = (void *)0xb8000;
@@ -69,6 +81,8 @@ void k_main(unsigned long magic, multiboot_info_t *info)
 	(void)magic;
 	(void)info;
 
+	init_serial(COM1_BASE);
+	set_write_func(com1_write, NULL);
 	set_gdt();
 	set_idt();
 	set_irq();

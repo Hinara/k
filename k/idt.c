@@ -1,11 +1,30 @@
 #include "idt.h"
 #include "gdt.h"
+#include "k/compiler.h"
+
+struct idt_ptr {
+	u16 len;
+	u32 ptr;
+} __attribute__((packed));
+
+struct idt_params {
+	struct x86_registers regs;
+	u32 interrupt;
+	u32 code;
+};
+
+typedef void (*interupt_handler_t)();
+struct idt_base_entry {
+	const char *name;
+	interupt_handler_t handler;
+	u16 selector;
+	u8 attributes;
+};
 
 #define IDT_FULL_ENTRY(nb, error, str) void interrupt_handler_##nb();
 #include "idt_table.h"
 #undef IDT_FULL_ENTRY
 
-#define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(arr[0]))
 
 #define IDT_DEFAULT_ATTRIBUTES (IDT_ATTRIBUTE_PRESENT | IDT_ATTRIBUTE_RING0 | \
 				IDT_ATTRIBUTE_GATE_32INT)

@@ -1,6 +1,7 @@
 #include "gdt.h"
 #include "k/compiler.h"
 #include "k/types.h"
+#include "cr0.h"
 struct gdt_ptr {
 	u16 len;
 	u32 ptr;
@@ -30,8 +31,18 @@ static void flush_segment()
 	asm volatile("mov %0, %%gs" : : "a"(GDT_KERNEL_DS));
 	asm volatile("mov %0, %%ss" : : "a"(GDT_KERNEL_DS));
 }
+
+static void set_protected_mode()
+{
+	u32 cr0;
+	asm volatile("mov %%cr0,%%eax" : "=a"(cr0) :);
+	cr0 |= CR0_PROTECTED_MODE;
+	asm volatile("mov %%eax, %%cr0" : : "a"(cr0));
+}
+
 void set_gdt() {
 
 	load_gdt(&gdt);
 	flush_segment();
+	set_protected_mode();
 }
